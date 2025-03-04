@@ -1,0 +1,14 @@
+[project]
+name = "rag-from-scratch"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=0.6.3",
+    "openai>=1.65.1",
+    "pypdf2>=3.0.1",
+    "python-docx>=1.1.2",
+    "python-dotenv>=1.0.1",
+    "ruff>=0.9.9",
+]
