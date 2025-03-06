@@ -4,6 +4,7 @@ from pathlib import Path
 import chromadb
 from chromadb.api.models.Collection import Collection
 from chromadb.api.types import EmbeddingFunction
+from chromadb.errors import InvalidCollectionException
 from chromadb.utils import embedding_functions
 
 from .read_docs import DocumentReaderFactory
@@ -75,26 +76,43 @@ def get_supported_extensions() -> set[str]:
     return set(DocumentReaderFactory._readers.keys())
 
 
+def get_processed_files(collection: Collection) -> set[str]:
+    """Get set of files that have already been processed"""
+    # Get all metadatas from collection
+    results = collection.get()
+    if not results["metadatas"]:
+        return set()
+
+    # Extract unique source filenames
+    return {meta["source"] for meta in results["metadatas"]}
+
+
 def process_and_add_documents(collection: Collection, folder_path: str | Path) -> None:
     """Process all documents in a folder and add to collection"""
     folder_path = Path(folder_path)
     if not folder_path.is_dir():
         raise ValueError(f"Invalid folder path: {folder_path}")
 
+    # Get already processed files
+    processed_files = get_processed_files(collection)
+
+    # Get list of files to process
     supported_extensions = get_supported_extensions()
     files = [
         file
         for file in folder_path.iterdir()
-        if file.is_file() and file.suffix.lower() in supported_extensions
+        if file.is_file()
+        and file.suffix.lower() in supported_extensions
+        and file.name not in processed_files  # Only process new files
     ]
 
     if not files:
-        logger.warning(f"No supported files found in {folder_path}")
+        logger.info("No new files to process")
         return
 
     for file_path in files:
         try:
-            logger.info(f"Processing {file_path.name}...")
+            logger.info(f"Processing new file: {file_path.name}...")
             ids, texts, metadatas = process_document(file_path)
             add_to_collection(collection, ids, texts, metadatas)
             logger.info(f"Added {len(texts)} chunks to collection")
@@ -126,18 +144,22 @@ def create_collection(
     collection_name: str = "documents_collection",
 ) -> Collection:
     """Create or get existing collection with sentence transformer embeddings"""
-    # Initialize ChromaDB client: persistent client for dev
-    client = chromadb.PersistentClient(
-        path=str(Path(path))
-    )  # ChromaDB expects string path
+    # Initialize ChromaDB client
+    client = chromadb.PersistentClient(path=str(Path(path)))
 
-    # Get embedding function
-    sentence_transformer_ef = get_embedding_function(model_name)
+    # Check if collection exists
+    try:
+        # Try to get existing collection
+        collection = client.get_collection(name=collection_name)
+        logger.info(f"Retrieved existing collection: {collection_name}")
+    except InvalidCollectionException:
+        # Collection doesn't exist, create new one with embedding function
+        sentence_transformer_ef = get_embedding_function(model_name)
+        collection = client.create_collection(
+            name=collection_name, embedding_function=sentence_transformer_ef
+        )
+        logger.info(f"Created new collection: {collection_name}")
 
-    # Create or get existing collection
-    collection = client.get_or_create_collection(
-        name=collection_name, embedding_function=sentence_transformer_ef
-    )
     return collection
 
 
