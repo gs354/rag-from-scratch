@@ -12,7 +12,17 @@ def normalize_whitespace(text: str) -> str:
 
 
 def split_into_potential_sentences(text: str) -> list[str]:
-    """Split text into potential sentences based on punctuation and capitalization"""
+    """Split text into potential sentences based on punctuation and capitalization.
+    The output list of strings is constructed as follows:
+    - Even indices (0, 2, 4...) contain the text before punctuation.
+    - Odd indices (1, 3, 5...) contain the punctuation.
+
+    Args:
+        text (str): The text to split into potential sentences
+
+    Returns:
+        list[str]: A list of potential sentences split from their punctuation.
+    """
     # Look for: .!? followed by space and capital letter, or end of string
     return re.split(r"([.!?]+(?=\s+[A-Z]|\s*$))", text)
 
@@ -25,7 +35,19 @@ def is_abbreviation_end(text: str, abbreviations: set[str]) -> bool:
 def reconstruct_sentences(
     potential_sentences: list[str], abbreviations: set[str]
 ) -> list[str]:
-    """Reconstruct proper sentences, handling abbreviations"""
+    """Reconstruct proper sentences, handling abbreviations.
+    Potential sentences are split from their punctuation, so we need to reconstruct.
+    The input list of strings is constructed as follows:
+    - Even indices (0, 2, 4...) contain the text before punctuation.
+    - Odd indices (1, 3, 5...) contain the punctuation.
+
+    Args:
+        potential_sentences (list[str]): A list of potential sentences split from their punctuation.
+        abbreviations (set[str]): A set of common abbreviations.
+
+    Returns:
+        list[str]: A list of reconstructed sentences.
+    """
     sentences = []
     current_sentence = ""
 
