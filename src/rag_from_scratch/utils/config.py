@@ -11,7 +11,8 @@ if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is not set")
 
 # Load TOML config
-CONFIG_PATH = Path("config.toml")
+PACKAGE_ROOT = Path(__file__).parent.parent
+CONFIG_PATH = PACKAGE_ROOT / "config" / "config.toml"
 if not CONFIG_PATH.exists():
     raise FileNotFoundError(f"Configuration file not found: {CONFIG_PATH}")
 

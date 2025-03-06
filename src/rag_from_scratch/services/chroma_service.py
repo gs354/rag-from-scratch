@@ -7,8 +7,8 @@ from chromadb.api.types import EmbeddingFunction
 from chromadb.errors import InvalidCollectionException
 from chromadb.utils import embedding_functions
 
-from .read_docs import DocumentReaderFactory
-from .text_splitter import split_text
+from ..core.document_processing import DocumentReaderFactory
+from ..core.text_splitter import split_text
 
 logger = logging.getLogger(__name__)
 
