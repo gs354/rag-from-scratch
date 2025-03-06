@@ -64,7 +64,7 @@ def main():
 
         # Process query
         query = "What are the main recommendations given by the contractors?"
-        response, sources, semantic_search_results = process_query(collection, query)
+        response, sources, _ = process_query(collection, query)
 
         # Save results
         results = {
