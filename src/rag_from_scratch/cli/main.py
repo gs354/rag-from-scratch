@@ -51,7 +51,7 @@ def process_query(collection: Collection, query: str) -> tuple[str, list[str], d
 
 
 def main():
-    """Main function to process and add documents to ChromaDB collection"""
+    """Main function for basic question-answer RAG"""
     # Set up logging
     setup_logging()
     logger.info("Starting document processing")
