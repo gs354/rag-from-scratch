@@ -16,7 +16,23 @@ logger = logging.getLogger(__name__)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-def get_prompt(context: str, conversation_history: str, query: str):
+def get_prompt(context: str, query: str):
+    """Generate a prompt combining context and query"""
+    prompt = f"""Based on the following context, please provide a relevant 
+    and contextual response. If the answer cannot be derived from the context, 
+    only say "I cannot answer this based on the provided information."
+
+    Context from documents:
+    {context}
+
+    Human: {query}
+
+    Assistant:"""
+
+    return prompt
+
+
+def get_prompt_with_history(context: str, conversation_history: str, query: str):
     """Generate a prompt combining context, history, and query"""
     prompt = f"""Based on the following context and conversation history, 
     please provide a relevant and contextual response. If the answer cannot 
@@ -36,9 +52,14 @@ def get_prompt(context: str, conversation_history: str, query: str):
     return prompt
 
 
-def generate_response(query: str, context: str, conversation_history: str = "") -> str:
-    """Generate a response using OpenAI with conversation history"""
-    prompt = get_prompt(context, conversation_history, query)
+def generate_response(
+    query: str, context: str, conversation_history: str | None = None
+) -> str:
+    """Generate a response using OpenAI"""
+    if conversation_history is None:
+        prompt = get_prompt(context, query)
+    else:
+        prompt = get_prompt_with_history(context, conversation_history, query)
 
     try:
         response = client.chat.completions.create(
