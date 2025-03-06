@@ -1,6 +1,5 @@
 import logging
 
-from dotenv import load_dotenv
 from openai import APIError, APITimeoutError, OpenAI, RateLimitError
 
 from ..utils.config import (
@@ -10,8 +9,6 @@ from ..utils.config import (
     OPENAI_TEMPERATURE,
 )
 from .chroma_service import get_context_with_sources, semantic_search
-
-load_dotenv()
 
 logger = logging.getLogger(__name__)
 
