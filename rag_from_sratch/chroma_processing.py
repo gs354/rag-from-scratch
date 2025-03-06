@@ -152,9 +152,10 @@ def get_context_with_sources(results: dict) -> tuple[str, list[str]]:
     # Combine document chunks into a single context
     context = "\n\n".join(results["documents"][0])
 
-    # Format sources with metadata
+    # Format sources with metadata and distances
     sources = [
-        f"{meta['source']} (chunk {meta['chunk']})" for meta in results["metadatas"][0]
+        f"{meta['source']} (chunk {meta['chunk']}, dist {round(dist, 4)})"
+        for meta, dist in zip(results["metadatas"][0], results["distances"][0])
     ]
 
     return context, sources

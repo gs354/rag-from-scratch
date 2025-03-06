@@ -35,7 +35,7 @@ def get_collection(
     return collection
 
 
-def process_query(collection: Collection, query: str) -> tuple[str, list[str]]:
+def process_query(collection: Collection, query: str) -> tuple[str, list[str], dict]:
     """Process a query and return response with sources"""
     logger.info(f"Processing query: {query}")
     try:
@@ -68,11 +68,11 @@ def main():
 
         # Save results
         results = {
-            "documents": [[response]],
-            "metadatas": [[{"source": "OpenAI Response"}]],
-            "distances": semantic_search_results["distances"],
+            "query": query,
+            "response": response,
+            "sources": "\n".join(sources),
         }
-        save_rag_results(results, query, include_sources=sources)
+        save_rag_results(results)
         logger.info("Results saved successfully")
 
     except FileNotFoundError as e:
