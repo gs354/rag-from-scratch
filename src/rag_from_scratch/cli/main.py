@@ -4,19 +4,19 @@ from pathlib import Path
 from chromadb.api import Collection
 from openai import APIError
 
-from rag_from_sratch.chroma_processing import (
+from ..services.chroma_service import (
     create_collection,
     process_and_add_documents,
 )
-from rag_from_sratch.config import (
+from ..services.openai_service import rag_query
+from ..utils.config import (
     CHROMA_DIR,
     COLLECTION_NAME,
     DOCS_DIR,
     EMBEDDING_MODEL,
 )
-from rag_from_sratch.logging_config import setup_logging
-from rag_from_sratch.openai_interface import rag_query
-from rag_from_sratch.save_results import save_rag_results
+from ..utils.logging_config import setup_logging
+from ..utils.save_results import save_rag_results
 
 logger = logging.getLogger(__name__)
 

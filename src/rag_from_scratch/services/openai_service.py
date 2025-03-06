@@ -1,19 +1,22 @@
 import logging
-import os
 
 from dotenv import load_dotenv
 from openai import APIError, APITimeoutError, OpenAI, RateLimitError
 
-from . import config
-from .chroma_processing import get_context_with_sources, semantic_search
+from ..utils.config import (
+    OPENAI_API_KEY,
+    OPENAI_MAX_TOKENS,
+    OPENAI_MODEL,
+    OPENAI_TEMPERATURE,
+)
+from .chroma_service import get_context_with_sources, semantic_search
 
 load_dotenv()
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 logger = logging.getLogger(__name__)
 
 # Initialize OpenAI client
-client = OpenAI(api_key=config.OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def get_prompt(context: str, conversation_history: str, query: str):
@@ -42,7 +45,7 @@ def generate_response(query: str, context: str, conversation_history: str = "") 
 
     try:
         response = client.chat.completions.create(
-            model=config.OPENAI_MODEL,
+            model=OPENAI_MODEL,
             messages=[
                 {
                     "role": "system",
@@ -50,8 +53,8 @@ def generate_response(query: str, context: str, conversation_history: str = "") 
                 },
                 {"role": "user", "content": prompt},
             ],
-            temperature=config.OPENAI_TEMPERATURE,
-            max_tokens=config.OPENAI_MAX_TOKENS,
+            temperature=OPENAI_TEMPERATURE,
+            max_tokens=OPENAI_MAX_TOKENS,
         )
         return response.choices[0].message.content
     except RateLimitError as e:

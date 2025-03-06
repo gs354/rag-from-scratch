@@ -1,0 +1,17 @@
+[openai]
+model = "gpt-4o-mini-2024-07-18"
+temperature = 0.1
+max_tokens = 500
+
+[paths]
+results_dir = "results"
+docs_dir = "data/raw"
+chroma_dir = "data/processed/chroma"
+
+[chroma]
+embedding_model = "all-MiniLM-L6-v2"
+collection_name = "documents_collection"
+
+[logging]
+level = "INFO"
+log_file = "rag_processing.log" 

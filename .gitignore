@@ -19,6 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual environments
 .env
@@ -36,34 +37,24 @@ venv.bak/
 *.swo
 .DS_Store
 
-# Project specific
-results/
-docs/
-chroma/
+# Project specific directories
+/results/
+/data/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Configuration
+/config/*.toml
+!/config/default.toml
+
+# Logs
 *.log
+
+# Environment variables
 .env
-config.toml
+.env.*
+!.env.example
 
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
