@@ -1,5 +1,6 @@
 import logging
 
+from chromadb.api.models.Collection import Collection
 from openai import APIError, APITimeoutError, OpenAI, RateLimitError
 
 from ..utils.config import (
@@ -89,7 +90,7 @@ def generate_response(
         return error_msg
 
 
-def rag_query(collection, query: str, n_chunks: int = 2):
+def rag_query(collection: Collection, query: str, n_chunks: int = 2):
     """Perform RAG query: retrieve relevant chunks and generate answer"""
     # Get relevant chunks
     semantic_search_results = semantic_search(
