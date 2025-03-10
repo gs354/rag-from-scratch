@@ -100,7 +100,7 @@ def main():
         logger.error(f"OpenAI API error: {e}")
         raise
     except Exception as e:
-        logger.error(f"Failed to process documents: {e}", exc_info=True)
+        logger.error(f"Other error: {e}", exc_info=True)
         raise
 
 
