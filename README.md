@@ -35,6 +35,7 @@ rag-project/
 │       ├── core/                      # Core processing logic
 │       │   ├── document_processing.py # Document readers
 │       │   ├── text_splitter.py       # Text chunking
+│       │   ├── rag_pipeline.py        # RAG conversation management
 │       │   └── abbreviations.py       # Text processing helpers
 │       ├── services/                  # External service integrations
 │       │   ├── chroma_service.py      # Vector DB operations
@@ -60,6 +61,7 @@ rag-project/
 ```bash
 rag-from-scratch
 ```
+- You will be prompted to ask questions in a loop, until you type 'exit'.
 
 ### Running tests
 
