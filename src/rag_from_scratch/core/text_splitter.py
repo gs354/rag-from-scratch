@@ -57,7 +57,7 @@ def reconstruct_sentences(
             potential_sentences[i + 1] if i + 1 < len(potential_sentences) else ""
         )
 
-        if is_abbreviation_end(current_part, abbreviations):
+        if is_abbreviation_end(current_part + punctuation, abbreviations):
             current_sentence += current_part + punctuation + " "
         else:
             sentences.append((current_sentence + current_part + punctuation).strip())
