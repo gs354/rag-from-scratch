@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Protocol
 
 import docx
-import PyPDF2
+import pypdf
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class PDFReader(DocumentReader):
     def read(self, file_path: str | Path) -> str:
         text = ""
         with open(file_path, "rb") as file:
-            pdf_reader = PyPDF2.PdfReader(file)
+            pdf_reader = pypdf.PdfReader(file)
             for page in pdf_reader.pages:
                 text += page.extract_text() + "\n"
         return text

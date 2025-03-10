@@ -11,7 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "chromadb>=0.6.3",
     "openai>=1.65.1",
-    "pypdf2>=3.0.1",
+    "pypdf>=5.3.1",
     "python-docx>=1.1.2",
     "python-dotenv>=1.0.1",
     "sentence-transformers>=3.4.1",
