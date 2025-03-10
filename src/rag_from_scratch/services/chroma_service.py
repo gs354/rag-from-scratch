@@ -163,6 +163,20 @@ def create_collection(
     return collection
 
 
+def get_collection(
+    path: str | Path,
+    model_name: str,
+    collection_name: str,
+) -> Collection:
+    """Get or create a collection with sentence transformer embeddings"""
+    collection = create_collection(
+        path=path,
+        model_name=model_name,
+        collection_name=collection_name,
+    )
+    return collection
+
+
 def semantic_search(collection: Collection, query: str, n_results: int = 2) -> dict:
     """Perform semantic search on the collection"""
     results = collection.query(query_texts=[query], n_results=n_results)

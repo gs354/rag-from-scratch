@@ -1,6 +1,5 @@
 import logging
 
-from chromadb.api.models.Collection import Collection
 from openai import APIError, APITimeoutError, OpenAI, RateLimitError
 
 from ..utils.config import (
@@ -9,7 +8,6 @@ from ..utils.config import (
     OPENAI_MODEL,
     OPENAI_TEMPERATURE,
 )
-from .chroma_service import get_context_with_sources, semantic_search
 
 logger = logging.getLogger(__name__)
 
@@ -90,15 +88,34 @@ def generate_response(
         return error_msg
 
 
-def rag_query(collection: Collection, query: str, n_chunks: int = 2):
-    """Perform RAG query: retrieve relevant chunks and generate answer"""
-    # Get relevant chunks
-    semantic_search_results = semantic_search(
-        collection=collection, query=query, n_results=n_chunks
-    )
-    context, sources = get_context_with_sources(semantic_search_results)
+def contextualize_query(query: str, conversation_history: str):
+    """Convert follow-up questions into standalone queries"""
+    contextualize_prompt = """Given a chat history and the latest user question 
+    which might reference context in the chat history, formulate a standalone 
+    question which can be understood without the chat history. Do NOT answer 
+    the question, just reformulate it if needed and otherwise return it as is."""
 
-    # Generate response
-    response = generate_response(query, context)
-
-    return response, sources, semantic_search_results
+    try:
+        completion = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": contextualize_prompt},
+                {
+                    "role": "user",
+                    "content": f"Chat history:\n{conversation_history}\n\nQuestion:\n{query}",
+                },
+            ],
+        )
+        return completion.choices[0].message.content
+    except RateLimitError as e:
+        error_msg = "Rate limit exceeded. Please try again later."
+        logger.error(f"{error_msg}: {str(e)}")
+        return error_msg
+    except APITimeoutError as e:
+        error_msg = "Request timed out. Please try again."
+        logger.error(f"{error_msg}: {str(e)}")
+        return error_msg
+    except APIError as e:
+        error_msg = "API error occurred. Please try again later."
+        logger.error(f"{error_msg}: {str(e)}")
+        return error_msg
