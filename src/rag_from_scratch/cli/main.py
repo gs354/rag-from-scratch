@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    """Main function for basic question-answer RAG"""
+    """Main function for conversational RAG"""
     # Set up logging
     setup_logging()
-    logger.info("Starting document processing")
+    logger.info("Starting conversational RAG")
 
     try:
         # Initialize collection and process documents
@@ -36,23 +36,37 @@ def main():
         process_and_add_documents(collection=collection, folder_path=DOCS_DIR)
         logger.info("Document processing completed successfully")
 
-        query = input("Enter a query: ")
+        # Initialize conversation manager and create a session
         conversation_manager = ConversationManager()
         session_id = conversation_manager.create_session()
-        response, sources, _ = process_conversation(
-            conversation_manager=conversation_manager,
-            collection=collection,
-            query=query,
-            session_id=session_id,
-        )
-        # Save results
-        results = {
-            "query": query,
-            "response": response,
-            "sources": "\n".join(sources),
-        }
-        save_rag_results(results)
-        logger.info("Results saved successfully")
+
+        while True:
+            query = input("Enter a query (or type 'exit' to end): ")
+            if query.lower() == "exit":
+                logger.info("User chose to exit the conversation.")
+                break
+
+            # Process the query and get the response
+            response, sources, _ = process_conversation(
+                conversation_manager=conversation_manager,
+                collection=collection,
+                query=query,
+                session_id=session_id,
+            )
+
+            # Display the response and sources
+            print(f"Response: {response}")
+            if sources:
+                print(f"Sources:\n{sources}")
+
+            # Save results
+            results = {
+                "query": query,
+                "response": response,
+                "sources": "\n".join(sources),
+            }
+            save_rag_results(results)
+            logger.info("Results saved successfully")
 
     except FileNotFoundError as e:
         logger.error(f"File or directory not found: {e}")
