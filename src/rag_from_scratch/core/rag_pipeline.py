@@ -73,20 +73,6 @@ class ConversationManager:
         return formatted_history.strip()
 
 
-def rag_query(collection: Collection, query: str, n_chunks: int = 2):
-    """Perform RAG query: retrieve relevant chunks and generate answer"""
-    # Get relevant chunks
-    semantic_search_results = semantic_search(
-        collection=collection, query=query, n_results=n_chunks
-    )
-    context, sources = get_context_with_sources(semantic_search_results)
-
-    # Generate response
-    response = generate_response(query, context)
-
-    return response, sources, semantic_search_results
-
-
 def conversational_rag_query(
     conversation_manager: ConversationManager,
     collection: Collection,
@@ -123,21 +109,6 @@ def conversational_rag_query(
     )
 
     return response, sources, semantic_search_results
-
-
-def process_query(collection: Collection, query: str) -> tuple[str, list[str], dict]:
-    """Process a query and return response with sources"""
-    logger.info(f"Processing query: {query}")
-    try:
-        response, sources, semantic_search_results = rag_query(collection, query)
-        logger.info("Query processed successfully")
-        return response, sources, semantic_search_results
-    except APIError as e:
-        logger.error(f"OpenAI API error: {e}")
-        raise
-    except Exception as e:
-        logger.error(f"Error processing query: {e}")
-        raise
 
 
 def process_conversation(
