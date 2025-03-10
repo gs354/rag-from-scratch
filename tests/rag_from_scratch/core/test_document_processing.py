@@ -26,6 +26,7 @@ def text_file():
 def pdf_file():
     pdf = pypdf.PdfWriter()
     pdf.add_blank_page(72, 72)
+    pdf.write
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         pdf.write(tmp)
         tmp_path = tmp.name
@@ -62,3 +63,25 @@ def test_factory_docx_reader(docx_file):
 def test_factory_unsupported_format():
     with pytest.raises(ValueError, match="Unsupported file format: .unsupported"):
         DocumentReaderFactory.get_reader("test.unsupported")
+
+
+def test_text_reader(text_file):
+    reader = TextReader()
+    content = reader.read(text_file)
+    assert content == "Hello, this is a text file."
+
+
+def test_docx_reader(docx_file):
+    reader = DocxReader()
+    content = reader.read(docx_file)
+    assert content == "Hello, this is a Word document."
+
+
+def test_read_document_text(text_file):
+    content = DocumentReaderFactory.read_document(text_file)
+    assert content == "Hello, this is a text file."
+
+
+def test_read_document_docx(docx_file):
+    content = DocumentReaderFactory.read_document(docx_file)
+    assert content == "Hello, this is a Word document."
