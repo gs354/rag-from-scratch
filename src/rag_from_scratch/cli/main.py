@@ -1,5 +1,8 @@
 import logging
+from datetime import datetime
+from pathlib import Path
 
+from chromadb.api.models.Collection import Collection
 from openai import APIError
 
 from ..core.rag_pipeline import (
@@ -15,6 +18,7 @@ from ..utils.config import (
     COLLECTION_NAME,
     DOCS_DIR,
     EMBEDDING_MODEL,
+    RESULTS_DIR,
 )
 from ..utils.logging_config import setup_logging
 from ..utils.save_results import save_rag_results
@@ -22,11 +26,51 @@ from ..utils.save_results import save_rag_results
 logger = logging.getLogger(__name__)
 
 
+def handle_user_query(
+    conversation_manager: ConversationManager,
+    collection: Collection,
+    session_id: str,
+    filepath: Path | str,
+) -> bool:
+    """Handle a single user query, process it, and save the results."""
+    query = input("Enter a query (or type 'exit' to end): ")
+    if query.lower() == "exit":
+        logger.info("User chose to exit the conversation.")
+        return False
+
+    # Process the query and get the response
+    response, sources, _ = process_conversation(
+        conversation_manager=conversation_manager,
+        collection=collection,
+        query=query,
+        session_id=session_id,
+    )
+
+    # Display the response and sources
+    print(f"Response: {response}")
+    if sources:
+        print(f"Sources:\n{sources}")
+
+    # Save results
+    results = {
+        "query": query,
+        "response": response,
+        "sources": "\n".join(sources),
+    }
+    save_rag_results(filepath=filepath, results=results)
+    logger.info("Results saved successfully")
+    return True
+
+
 def main():
     """Main function for conversational RAG"""
     # Set up logging
     setup_logging()
     logger.info("Starting conversational RAG")
+
+    # Create filename with timestamp for save to csv
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filepath = RESULTS_DIR / f"rag_results_{timestamp}.csv"
 
     try:
         # Initialize collection and process documents
@@ -40,33 +84,14 @@ def main():
         conversation_manager = ConversationManager()
         session_id = conversation_manager.create_session()
 
-        while True:
-            query = input("Enter a query (or type 'exit' to end): ")
-            if query.lower() == "exit":
-                logger.info("User chose to exit the conversation.")
-                break
-
-            # Process the query and get the response
-            response, sources, _ = process_conversation(
-                conversation_manager=conversation_manager,
-                collection=collection,
-                query=query,
-                session_id=session_id,
-            )
-
-            # Display the response and sources
-            print(f"Response: {response}")
-            if sources:
-                print(f"Sources:\n{sources}")
-
-            # Save results
-            results = {
-                "query": query,
-                "response": response,
-                "sources": "\n".join(sources),
-            }
-            save_rag_results(results)
-            logger.info("Results saved successfully")
+        # Continuous conversation loop
+        while handle_user_query(
+            conversation_manager=conversation_manager,
+            collection=collection,
+            session_id=session_id,
+            filepath=filepath,
+        ):
+            pass
 
     except FileNotFoundError as e:
         logger.error(f"File or directory not found: {e}")
