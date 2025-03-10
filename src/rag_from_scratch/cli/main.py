@@ -2,7 +2,10 @@ import logging
 
 from openai import APIError
 
-from ..core.rag_pipeline import process_query
+from ..core.rag_pipeline import (
+    ConversationManager,
+    process_conversation,
+)
 from ..services.chroma_service import (
     get_collection,
     process_and_add_documents,
@@ -33,10 +36,15 @@ def main():
         process_and_add_documents(collection=collection, folder_path=DOCS_DIR)
         logger.info("Document processing completed successfully")
 
-        # Process query
-        query = "What are the main recommendations given by the contractors?"
-        response, sources, _ = process_query(collection, query)
-
+        query = input("Enter a query: ")
+        conversation_manager = ConversationManager()
+        session_id = conversation_manager.create_session()
+        response, sources, _ = process_conversation(
+            conversation_manager=conversation_manager,
+            collection=collection,
+            query=query,
+            session_id=session_id,
+        )
         # Save results
         results = {
             "query": query,
