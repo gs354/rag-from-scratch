@@ -58,6 +58,7 @@ rag-project/
 
 ## Usage
 - Place documents to be embedded in the `data/raw` directory.
+- To start the app, run:
 
 ```bash
 rag-from-scratch
