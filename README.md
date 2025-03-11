@@ -57,6 +57,7 @@ rag-project/
 ```
 
 ## Usage
+- Place documents to be embedded in the `data/raw` directory.
 
 ```bash
 rag-from-scratch
