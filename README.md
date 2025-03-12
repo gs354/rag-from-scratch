@@ -41,18 +41,19 @@ rag-project/
 │       │   ├── chroma_service.py      # Vector DB operations
 │       │   └── openai_service.py      # LLM operations
 │       ├── utils/                     # Utilities
-│       │   ├── config.py              # Configuration
-│       │   ├── logging_config.py      # Logging setup
 │       │   └── save_results.py        # Results handling
+│       ├── config/                    # Config
+│       │   ├── config.py              # Variables, keys and paths setup
+│       │   ├── logging_config.py      # Logging setup
+│       │   └── config.toml            # Default settings
 │       └── cli/                       # Command-line interface
 │           └── main.py                # Entry point
 ├── tests/                    # Test files
 ├── data/                     # Data directories
 │   ├── raw/                 # Input documents
 │   └── processed/           # Vector DB storage
-├── config/                  # Configuration files
-│   └── config.toml          # Default settings
-├── results/                 # Query results
+|
+├── results/                 # Query results  
 └── pyproject.toml           # Project metadata
 ```
 
