@@ -2,7 +2,7 @@ import logging
 
 from openai import APIError, APITimeoutError, OpenAI, RateLimitError
 
-from ..utils.config import (
+from ..config.config import (
     OPENAI_API_KEY,
     OPENAI_MAX_TOKENS,
     OPENAI_MODEL,
