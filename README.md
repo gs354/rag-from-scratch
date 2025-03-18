@@ -103,3 +103,6 @@ pytest
 ### Development Dependencies
 - **pytest** >=8.3.5: Testing framework
 - **ruff** >=0.9.9: Linting and formatting
+
+### References
+- Develops the implementation described in a [futures-smart](https://blog.futuresmart.ai/building-rag-applications-without-langchain-or-llamaindex) blog.
