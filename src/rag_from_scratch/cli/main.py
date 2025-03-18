@@ -5,6 +5,14 @@ from pathlib import Path
 from chromadb.api.models.Collection import Collection
 from openai import APIError
 
+from ..config.config import (
+    CHROMA_DIR,
+    COLLECTION_NAME,
+    DOCS_DIR,
+    EMBEDDING_MODEL,
+    RESULTS_DIR,
+)
+from ..config.logging_config import setup_logging
 from ..core.rag_pipeline import (
     ConversationManager,
     process_conversation,
@@ -13,14 +21,6 @@ from ..services.chroma_service import (
     get_collection,
     process_and_add_documents,
 )
-from ..utils.config import (
-    CHROMA_DIR,
-    COLLECTION_NAME,
-    DOCS_DIR,
-    EMBEDDING_MODEL,
-    RESULTS_DIR,
-)
-from ..utils.logging_config import setup_logging
 from ..utils.save_results import save_rag_results
 
 logger = logging.getLogger(__name__)
