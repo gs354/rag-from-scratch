@@ -105,4 +105,4 @@ pytest
 - **ruff** >=0.9.9: Linting and formatting
 
 ### References
-- Develops the implementation described in a [futures-smart](https://blog.futuresmart.ai/building-rag-applications-without-langchain-or-llamaindex) blog.
+- Develops the implementation described in a [futuresmart](https://blog.futuresmart.ai/building-rag-applications-without-langchain-or-llamaindex) blog.
