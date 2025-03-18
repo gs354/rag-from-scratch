@@ -11,6 +11,7 @@ chroma_dir = "data/processed/chroma"
 [chroma]
 embedding_model = "all-MiniLM-L6-v2"
 collection_name = "documents_collection"
+batch_size = 100
 
 [logging]
 level = "INFO"

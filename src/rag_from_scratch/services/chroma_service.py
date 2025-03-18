@@ -48,7 +48,11 @@ def process_document(file_path: str | Path) -> tuple[list[str], list[str], list[
 
 
 def add_to_collection(
-    collection: Collection, ids: list[str], texts: list[str], metadatas: list[dict]
+    collection: Collection,
+    ids: list[str],
+    texts: list[str],
+    metadatas: list[dict],
+    batch_size: int,
 ) -> None:
     """Add documents to collection in batches"""
     if not texts:
@@ -57,7 +61,6 @@ def add_to_collection(
     if not (len(ids) == len(texts) == len(metadatas)):
         raise ValueError("Mismatched lengths for ids, texts, and metadatas")
 
-    batch_size = 100
     for i in range(0, len(texts), batch_size):
         end_idx = min(i + batch_size, len(texts))
         try:
@@ -87,7 +90,9 @@ def get_processed_files(collection: Collection) -> set[str]:
     return {meta["source"] for meta in results["metadatas"]}
 
 
-def process_and_add_documents(collection: Collection, folder_path: str | Path) -> None:
+def process_and_add_documents(
+    collection: Collection, folder_path: str | Path, batch_size: int
+) -> None:
     """Process all documents in a folder and add to collection"""
     folder_path = Path(folder_path)
     if not folder_path.is_dir():
@@ -114,7 +119,7 @@ def process_and_add_documents(collection: Collection, folder_path: str | Path) -
         try:
             logger.info(f"Processing new file: {file_path.name}...")
             ids, texts, metadatas = process_document(file_path)
-            add_to_collection(collection, ids, texts, metadatas)
+            add_to_collection(collection, ids, texts, metadatas, batch_size)
             logger.info(f"Added {len(texts)} chunks to collection")
         except DocumentProcessingError as e:
             logger.error(f"Error processing {file_path}: {e}")

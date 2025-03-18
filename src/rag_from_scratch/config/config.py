@@ -1,7 +1,7 @@
 import os
+import tomllib
 from pathlib import Path
 
-import tomllib
 from dotenv import load_dotenv
 
 # Load environment variables for sensitive data
@@ -32,6 +32,7 @@ CHROMA_DIR = Path(config["paths"]["chroma_dir"])
 # ChromaDB Configuration
 EMBEDDING_MODEL = config["chroma"]["embedding_model"]
 COLLECTION_NAME = config["chroma"]["collection_name"]
+BATCH_SIZE = config["chroma"]["batch_size"]
 
 # Logging Configuration
 LOG_LEVEL = config["logging"]["level"]

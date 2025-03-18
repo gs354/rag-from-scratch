@@ -6,6 +6,7 @@ from chromadb.api.models.Collection import Collection
 from openai import APIError
 
 from ..config.config import (
+    BATCH_SIZE,
     CHROMA_DIR,
     COLLECTION_NAME,
     DOCS_DIR,
@@ -77,7 +78,9 @@ def main():
         collection = get_collection(
             path=CHROMA_DIR, model_name=EMBEDDING_MODEL, collection_name=COLLECTION_NAME
         )
-        process_and_add_documents(collection=collection, folder_path=DOCS_DIR)
+        process_and_add_documents(
+            collection=collection, folder_path=DOCS_DIR, batch_size=BATCH_SIZE
+        )
         logger.info("Document processing completed successfully")
 
         # Initialize conversation manager and create a session
