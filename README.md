@@ -59,6 +59,7 @@ rag-project/
 
 ## Usage
 - Place documents to be embedded in the `data/raw` directory.
+- Make your OpenAI Key accessible within `config.py`, e.g. place in a `.env` file in the project root.
 - To start the app, run:
 
 ```bash
